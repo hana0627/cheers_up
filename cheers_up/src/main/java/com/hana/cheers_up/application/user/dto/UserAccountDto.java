@@ -19,7 +19,7 @@ public record UserAccountDto(
 ) {
 
     public static UserAccountDto of(String userId, String email, String nickname, String memo, RoleType roleType) {
-        return new UserAccountDto(userId, email, nickname, memo, roleType, null, null, null, null);
+        return new UserAccountDto(userId, email, nickname, memo, roleType, LocalDateTime.now(), null,  LocalDateTime.now(), null);
     }
 
     public static UserAccountDto of(String userId, String email, String nickname, String memo, RoleType roleType, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
@@ -47,7 +47,8 @@ public record UserAccountDto(
                 email,
                 nickname,
                 memo,
-                roleType
+                roleType,
+                createdBy
         );
     }
 }

@@ -5,8 +5,11 @@ import com.hana.cheers_up.application.user.dto.UserAccountDto;
 import com.hana.cheers_up.application.user.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,12 +18,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public String saveUser(UserAccountDto dto) {
+    public UserAccountDto saveUser(UserAccountDto dto) {
         log.info("[UserAccountService saveUser]");
-        //TODO : 저장전에 password encode를 수행하자
-        return userAccountRepository.save(dto.toEntity()).getUserId();
+        System.out.println("dto.toString() => " + dto.toString());
+        return UserAccountDto.from(userAccountRepository.save(dto.toEntity()));
+    }
+
+    public Optional<UserAccountDto> searchUser(String username) {
+        log.info("[UserAccountService searchUser]");
+        return userAccountRepository.findById(username).map(UserAccountDto::from);
     }
 }

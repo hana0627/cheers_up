@@ -5,26 +5,35 @@ import com.hana.cheers_up.application.user.dto.UserAccountDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public record CheersUpPrincipal(
         String username,
-        String password,
         Collection<? extends GrantedAuthority> authorities,
         String email,
         String nickname,
         String memo,
-        RoleType roleType
-) implements UserDetails {
+        RoleType roleType,
+        Map<String, Object> oAuth2Attributes
+) implements UserDetails, OAuth2User {
 
     //TODO 권한정보 구현하다가 망함.
+    public static CheersUpPrincipal of(String username, Collection<? extends GrantedAuthority> authorities, String email, String nickname, String memo, RoleType roleType) {
+        return CheersUpPrincipal.of(username, authorities, email, nickname, memo, roleType, Collections.emptyMap());
+    }
 
-    public static CheersUpPrincipal of(String username, String password, Collection<? extends GrantedAuthority> authorities, String email, String nickname, String memo, RoleType roleType) {
+
+    public static CheersUpPrincipal of(String username, Collection<? extends GrantedAuthority> authorities, String email, String nickname, String memo, RoleType roleType, Map<String, Object> oAuth2Attributes) {
         return new CheersUpPrincipal(
-                username, password, authorities, email, nickname, memo, roleType);
+                username,
+                authorities,
+                email,
+                nickname,
+                memo,
+                roleType,
+                oAuth2Attributes);
     }
 
     public static CheersUpPrincipal from(UserAccountDto dto) {
@@ -34,7 +43,6 @@ public record CheersUpPrincipal(
         authorities.add(new SimpleGrantedAuthority(RoleType.ADMIN.getRoleName()));
         return CheersUpPrincipal.of(
                 dto.userId(),
-                dto.password(),
                 authorities,
                 dto.email(),
                 dto.nickname(),
@@ -47,7 +55,6 @@ public record CheersUpPrincipal(
     public UserAccountDto toDto() {
         return UserAccountDto.of(
                 username,
-                password,
                 email,
                 nickname,
                 memo,
@@ -55,9 +62,10 @@ public record CheersUpPrincipal(
         );
     }
 
+    //TODO 패스워드 지우면서 여기 구현부 바뀜
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
 
     @Override
@@ -69,6 +77,7 @@ public record CheersUpPrincipal(
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        return authorities;
 //    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -97,5 +106,16 @@ public record CheersUpPrincipal(
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return oAuth2Attributes;
+    }
+
+    @Override
+    public String getName() {
+        return username;
     }
 }
