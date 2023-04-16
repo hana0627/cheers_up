@@ -21,6 +21,6 @@ public class UserAccountService {
     public String saveUser(UserAccountDto dto) {
         log.info("[UserAccountService saveUser]");
         //TODO : 저장전에 password encode를 수행하자
-        return userAccountRepository.save(dto.toEntity()).getId();
+        return userAccountRepository.save(dto.toEntity()).getUserId();
     }
 }

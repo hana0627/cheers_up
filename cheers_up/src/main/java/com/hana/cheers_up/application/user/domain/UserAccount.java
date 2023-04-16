@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 public class UserAccount extends AuditingFields {
 
@@ -28,9 +29,6 @@ public class UserAccount extends AuditingFields {
     protected UserAccount() {
     }
 
-    public String getId() {
-        return userId;
-    }
     public UserAccount(String userId, String password, String email, String nickname, String memo, RoleType roleType, String createdBy) {
         this.userId = userId;
         this.password = password;
