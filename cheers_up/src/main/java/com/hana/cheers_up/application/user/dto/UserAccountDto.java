@@ -3,28 +3,52 @@ package com.hana.cheers_up.application.user.dto;
 import com.hana.cheers_up.application.user.domain.UserAccount;
 import com.hana.cheers_up.application.user.domain.constant.RoleType;
 
+import java.time.LocalDateTime;
+
 public record UserAccountDto(
-        Long id,
-        String password,
+        String userId,
         String email,
         String nickname,
         String memo,
-        RoleType roleType
+        RoleType roleType,
+
+        LocalDateTime createdAt,
+        String createdBy,
+        LocalDateTime modifiedAt,
+        String modifiedBy
 ) {
 
-
-    private static UserAccountDto of(Long id, String password, String email, String nickname, String memo, RoleType roleType) {
-        return new UserAccountDto(id, password, email, nickname, memo, roleType);
+    public static UserAccountDto of(String userId, String email, String nickname, String memo, RoleType roleType) {
+        return new UserAccountDto(userId, email, nickname, memo, roleType, LocalDateTime.now(), null,  LocalDateTime.now(), null);
     }
+
+    public static UserAccountDto of(String userId, String email, String nickname, String memo, RoleType roleType, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
+        return new UserAccountDto(userId, email, nickname, memo, roleType, createdAt, createdBy, modifiedAt, modifiedBy);
+    }
+
+    public static UserAccountDto from(UserAccount entity) {
+        return UserAccountDto.of(
+                entity.getUserId(),
+                entity.getEmail(),
+                entity.getNickname(),
+                entity.getMemo(),
+                entity.getRoleType(),
+                entity.getCreatedAt(),
+                entity.getCreatedBy(),
+                entity.getModifiedAt(),
+                entity.getModifiedBy()
+        );
+    }
+
 
     public UserAccount toEntity() {
         return UserAccount.of(
-                id,
-                password,
+                userId,
                 email,
                 nickname,
                 memo,
-                roleType
+                roleType,
+                createdBy
         );
     }
 }

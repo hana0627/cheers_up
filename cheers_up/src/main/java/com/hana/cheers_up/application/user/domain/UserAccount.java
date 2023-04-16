@@ -5,15 +5,15 @@ import com.hana.cheers_up.application.user.domain.constant.RoleTypeConvertor;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
+@Getter
 @Entity
 public class UserAccount extends AuditingFields {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //id값
-    @Column
-    private String password; //비밀번호
+    @Column(length = 50)
+    private String userId; //id값
     @Column(length = 100)
     private String email; // 이메일
     @Column(length = 100)
@@ -28,20 +28,26 @@ public class UserAccount extends AuditingFields {
     protected UserAccount() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public UserAccount(Long id, String password, String email, String nickname, String memo, RoleType roleType) {
-        this.id = id;
-        this.password = password;
+    public UserAccount(String userId, String email, String nickname, String memo, RoleType roleType, String createdBy) {
+        //TODO 원래는 JpaAudting field를 토해서 createdBy를 넣어주려고 했으나, null이 넘어옴
+        // 결국 id값을 넣었는데 별로 바람직하지 않아보임
+        this.userId = userId;
         this.email = email;
         this.nickname = nickname;
         this.memo = memo;
         this.roleType = roleType;
+        this.createdBy = userId;
+        this.modifiedBy = userId;
     }
 
-    public static UserAccount of(Long id, String password, String email, String nickname, String memo, RoleType roleType) {
-        return new UserAccount(id, password, email, nickname, memo, roleType);
+
+    public static UserAccount of(String userId, String email, String nickname, String memo, RoleType roleType) {
+        return new UserAccount(userId, email, nickname, memo, roleType, null);
     }
+
+    public static UserAccount of(String userId,String email, String nickname, String memo, RoleType roleType, String createdBy) {
+        return new UserAccount(userId, email, nickname, memo, roleType, createdBy);
+    }
+
+
 }
