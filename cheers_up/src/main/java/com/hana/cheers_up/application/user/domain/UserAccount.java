@@ -10,8 +10,8 @@ import javax.persistence.*;
 public class UserAccount extends AuditingFields {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //id값
+    @Column(length = 50)
+    private String userId; //id값
     @Column
     private String password; //비밀번호
     @Column(length = 100)
@@ -28,20 +28,26 @@ public class UserAccount extends AuditingFields {
     protected UserAccount() {
     }
 
-    public Long getId() {
-        return id;
+    public String getId() {
+        return userId;
     }
-
-    public UserAccount(Long id, String password, String email, String nickname, String memo, RoleType roleType) {
-        this.id = id;
+    public UserAccount(String userId, String password, String email, String nickname, String memo, RoleType roleType, String createdBy) {
+        this.userId = userId;
         this.password = password;
         this.email = email;
         this.nickname = nickname;
         this.memo = memo;
         this.roleType = roleType;
+        this.createdBy = createdBy;
+        this.modifiedBy = createdBy;
     }
 
-    public static UserAccount of(Long id, String password, String email, String nickname, String memo, RoleType roleType) {
-        return new UserAccount(id, password, email, nickname, memo, roleType);
+
+    public static UserAccount of(String userId, String password, String email, String nickname, String memo, RoleType roleType) {
+        return new UserAccount(userId, password, email, nickname, memo, roleType, null);
+    }
+
+    public static UserAccount of(String userId, String password, String email, String nickname, String memo, RoleType roleType, String createdBy) {
+        return new UserAccount(userId, password, email, nickname, memo, roleType, createdBy);
     }
 }

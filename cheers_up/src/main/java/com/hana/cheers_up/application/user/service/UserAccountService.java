@@ -18,7 +18,7 @@ public class UserAccountService {
 
 
     @Transactional
-    public Long saveUser(UserAccountDto dto) {
+    public String saveUser(UserAccountDto dto) {
         log.info("[UserAccountService saveUser]");
         //TODO : 저장전에 password encode를 수행하자
         return userAccountRepository.save(dto.toEntity()).getId();
