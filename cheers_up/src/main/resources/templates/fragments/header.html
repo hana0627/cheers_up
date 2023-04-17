@@ -8,6 +8,7 @@
 <header>
   <div sec:authorize="isAuthenticated()">
     <a th:href="@{/logout}" role="button" id="kakao-logout" class="me-2">
+<!--      <span th:text="${principal.nickname}"></span>님 안녕하세요-->
       로그아웃
     </a>
   </div>

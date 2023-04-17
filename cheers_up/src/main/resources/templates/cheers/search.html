@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>검색 페이지</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f2f2f2;
+    }
+    h1 {
+      margin-top: 50px;
+      font-size: 48px;
+      color: #333;
+    }
+    form {
+      margin-top: 50px;
+      display: inline-block;
+      position: relative;
+    }
+    input[type=text] {
+      padding: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+      outline: none;
+      width: 600px;
+      placeholder-color: #999;
+    ::placeholder {
+      color: #999;
+      font-style: italic;
+    }
+    padding-right: 40px; /* 아이콘의 크기만큼 오른쪽 padding 추가 */
+    }
+    .highlight1 {
+      color: #EA4335;
+    }
+    .highlight2 {
+      color: #FBBC05;
+    }
+    .highlight3 {
+      color: #4285F4;
+    }
+    .highlight4 {
+      color: #34A853;
+    }
+    .search-icon {
+      position: absolute;
+      top: 12px;
+      right: 10px; /* 검색 아이콘을 오른쪽으로 위치시킴 */
+      width: 20px;
+      height: 20px;
+      background-image: url('https://cdn4.iconfinder.com/data/icons/32x32-free-design-icons/32/Search.png'); /* 검색 아이콘의 이미지 링크를 넣어주세요. */
+      background-size: cover;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1><span class="highlight1">오늘</span> <span class="highlight2">한잔</span> <span class="highlight3">어때요</span><span class="highlight4">?</span></h1>
+<form>
+  <input type="text" placeholder="어떤 정보를 찾고 계신가요?">
+  <div class="search-icon"></div> <!-- 검색 아이콘 추가 -->
+</form>
+</body>
+</html>
