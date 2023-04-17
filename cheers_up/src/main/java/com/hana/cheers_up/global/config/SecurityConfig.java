@@ -35,10 +35,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .mvcMatchers(HttpMethod.GET,
-                                "/").permitAll()
+                                "/", "/index", "/users/login").permitAll()
+                        .antMatchers("/cheers/search**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .formLogin(withDefaults())
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .oauth2Login(oAuth -> oAuth
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService)
@@ -77,7 +77,7 @@ public class SecurityConfig {
                     .orElseGet(() ->
                             CheersUpPrincipal.from(
                                     userAccountService.saveUser(
-                                        UserAccountDto.of(username, kakaoResponse.email(), kakaoResponse.nickname(), null,RoleType.USER)
+                                            UserAccountDto.of(username, kakaoResponse.email(), kakaoResponse.nickname(), null, RoleType.USER)
                                     )
                             )
                     );

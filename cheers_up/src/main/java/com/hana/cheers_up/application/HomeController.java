@@ -8,6 +8,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home() {
-        return "search_page";
+//        return "forward:/users/login";
+        return "index";
     }
 }
