@@ -23,12 +23,13 @@ public class UserAccountService {
     @Transactional
     public UserAccountDto saveUser(UserAccountDto dto) {
         log.info("[UserAccountService saveUser]");
-        System.out.println("dto.toString() => " + dto.toString());
         return UserAccountDto.from(userAccountRepository.save(dto.toEntity()));
     }
 
     public Optional<UserAccountDto> searchUser(String username) {
         log.info("[UserAccountService searchUser]");
-        return userAccountRepository.findById(username).map(UserAccountDto::from);
+        Optional<UserAccountDto> tmp = userAccountRepository.findById(username).map(UserAccountDto::from);
+        System.out.println(tmp.get().toString());
+        return tmp;
     }
 }
