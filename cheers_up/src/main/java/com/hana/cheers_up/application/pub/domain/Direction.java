@@ -1,14 +1,16 @@
 package com.hana.cheers_up.application.pub.domain;
 
+import com.hana.cheers_up.application.api.dto.DocumentDto;
+import com.hana.cheers_up.application.pub.dto.PubDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import javax.persistence.*;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Direction {
 
@@ -30,6 +32,23 @@ public class Direction {
     // 두 지점간의 거리
     private Double distance;
 
+
+    public static Direction from(DocumentDto documentDto, PubDto pubDto) {
+        return Direction.builder().
+                inputAddress(documentDto.addressName()).
+                inputLatitude(documentDto.latitude()).
+                inputLongitude(documentDto.longitude()).
+                targetPubName(pubDto.pubName()).
+                targetAddress(pubDto.pubAddress()).
+                targetLatitude(pubDto.latitude()).
+                targetLongitude(pubDto.longitude())
+                .distance(
+                        calculateDistance(documentDto.latitude(), documentDto.longitude(),
+                                pubDto.latitude(), pubDto.longitude())
+                )
+                .build();
+    }
+
     protected Direction direction() {
         return new Direction();
     }
@@ -42,5 +61,19 @@ public class Direction {
 
         double earthRadius = 6371; //Kilometers
         return earthRadius * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2));
+    }
+
+
+    @Builder
+    public Direction(Long id, String inputAddress, Double inputLatitude, Double inputLongitude, String targetPubName, String targetAddress, Double targetLatitude, Double targetLongitude, Double distance) {
+        this.id = id;
+        this.inputAddress = inputAddress;
+        this.inputLatitude = inputLatitude;
+        this.inputLongitude = inputLongitude;
+        this.targetPubName = targetPubName;
+        this.targetAddress = targetAddress;
+        this.targetLatitude = targetLatitude;
+        this.targetLongitude = targetLongitude;
+        this.distance = distance;
     }
 }
