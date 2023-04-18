@@ -2,9 +2,12 @@ package com.hana.cheers_up.application.pub.service;
 
 import com.hana.cheers_up.application.api.dto.DocumentDto;
 import com.hana.cheers_up.application.pub.domain.Direction;
+import com.hana.cheers_up.application.pub.repository.DirectionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +16,7 @@ import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class DirectionService {
     // 최대 20개 까지 노출
@@ -22,6 +26,7 @@ public class DirectionService {
     private static final double RADIUS_KM = 5.0;
 
     private final PubService pubService;
+    private final DirectionRepository directionRepository;
 
     public List<Direction> DirectionList(DocumentDto documentDto) {
         if(Objects.isNull(documentDto)) return Collections.emptyList();
@@ -33,6 +38,13 @@ public class DirectionService {
                 .sorted(Comparator.comparing(Direction::getDistance))
                 .limit(MAX_SEARCH_COUNT)
                 .toList();
+    }
+
+    @Transactional
+    public List<Direction> saveAll(List<Direction> directionList) {
+        if(CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
+
+        return directionRepository.saveAll(directionList);
     }
 
 
