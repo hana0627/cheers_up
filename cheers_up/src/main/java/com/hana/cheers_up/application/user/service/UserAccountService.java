@@ -26,10 +26,12 @@ public class UserAccountService {
         return UserAccountDto.from(userAccountRepository.save(dto.toEntity()));
     }
 
+    /**
+     * Optional로 반환하는 이유 -> 23.04.18 회원 여부를 파악하여, SecurityConfig에서 추가 작업을 수행.
+     * 그 과정에서 method chainning이 일어나고, 그 chainning이 끝나는 시점에서 객체를 반환하는 시직으로 작업하였음
+     */
     public Optional<UserAccountDto> searchUser(String username) {
         log.info("[UserAccountService searchUser]");
-        Optional<UserAccountDto> tmp = userAccountRepository.findById(username).map(UserAccountDto::from);
-        System.out.println(tmp.get().toString());
-        return tmp;
+        return userAccountRepository.findById(username).map(UserAccountDto::from);
     }
 }
