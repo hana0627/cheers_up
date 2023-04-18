@@ -58,8 +58,7 @@ public class SecurityConfig {
 
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(
-            UserAccountService userAccountService,
-            PasswordEncoder passwordEncoder
+            UserAccountService userAccountService
     ) {
         final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
 
@@ -82,11 +81,6 @@ public class SecurityConfig {
                             )
                     );
         };
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 }
