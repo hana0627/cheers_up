@@ -30,17 +30,3 @@ public class PubService {
 
 
 }
-
-        // TODO : 결과값을 보고 필히 리팩토링
-
-//        kakaoResponseDto.documentDtos().stream()
-//                .map(directionService::DirectionList)
-//                .map(directionService::saveAll);
-        
-//        for (int i = 0; i<kakaoResponseDto.documentDtos().size(); i++) {
-//        List<Direction> directions = directionService.DirectionList(kakaoResponseDto.documentDtos().get(i));
-//        directionService.saveAll(directions);
-//        }
-//    }
-//
-//}

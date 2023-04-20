@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,10 +27,21 @@ public class DirectionService {
     // 5키로 내외 
     // TODO: 결고값이 넉넉하다면 1km반경으로 줄여보자
     private static final double RADIUS_KM = 5.0;
+    private final PubService pubService;
     private final DirectionRepository directionRepository;
     private final KakaoSearchService kakaoSearchService;
 
+    public List<Direction> DirectionList(DocumentDto documentDto) {
+        if(Objects.isNull(documentDto)) return Collections.emptyList();
 
+        return pubService.Pubs().stream()
+                .map(
+                        pubDto -> Direction.from(documentDto, pubDto)
+                ).filter(direction -> direction.getDistance() <= RADIUS_KM)
+                .sorted(Comparator.comparing(Direction::getDistance))
+                .limit(MAX_SEARCH_COUNT)
+                .toList();
+    }
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList) {
@@ -49,7 +61,7 @@ public class DirectionService {
         DocumentDto documentDto = kakaoResponseDto.documentDtos().get(0);
         List<Direction> directions = buildDirectionListByCategory(documentDto);
 
-        this.saveAll(directions);
+        directionRepository.saveAll(directions);
 
     }
 
