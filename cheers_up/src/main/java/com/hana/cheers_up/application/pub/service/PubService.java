@@ -22,27 +22,14 @@ import java.util.List;
 public class PubService {
 
     private final PubRepository pubRepository;
-    private final KakaoSearchService kakaoAddressSearchService;
-    private final DirectionService directionService;
 
     public List<PubDto> Pubs() {
         return pubRepository.findAll().stream()
                 .map(PubDto::from).toList();
     }
 
-    @Transactional
-    public void recommendPubs(String address) {
-        KakaoResponseDto kakaoResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
 
-        if(ObjectUtils.isEmpty(kakaoResponseDto) || CollectionUtils.isEmpty(kakaoResponseDto.documentDtos())) {
-            log.error("[PubService recommendPubs fail] Input address: {}" , address);
-        }
-
-        DocumentDto documentDto = kakaoResponseDto.documentDtos().get(0);
-        List<Direction> directions = directionService.buildDirectionListByCategory(documentDto);
-
-        directionService.saveAll(directions);
-
+}
 
         // TODO : 결과값을 보고 필히 리팩토링
 
@@ -54,6 +41,6 @@ public class PubService {
 //        List<Direction> directions = directionService.DirectionList(kakaoResponseDto.documentDtos().get(i));
 //        directionService.saveAll(directions);
 //        }
-    }
-
-}
+//    }
+//
+//}

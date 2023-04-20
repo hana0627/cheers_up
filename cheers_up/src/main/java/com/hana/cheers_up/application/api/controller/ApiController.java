@@ -17,6 +17,6 @@ public class ApiController {
         log.info("[CheersController CheersSearch] - called");
 
         kakaoSearchService.requestAddressSearch(address);
-        return "re";
+        return "cheers/search";
     }
 }

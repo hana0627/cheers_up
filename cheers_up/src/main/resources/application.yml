@@ -13,6 +13,12 @@ spring:
       on-profile: common
 
 
+kakao:
+  rest:
+    api:
+      key: ${KAKAO_OAUTH_CLIENT_ID}
+
+
 ---
 spring:
   config:
