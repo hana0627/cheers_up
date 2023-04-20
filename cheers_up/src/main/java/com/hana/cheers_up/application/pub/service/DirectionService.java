@@ -1,6 +1,7 @@
 package com.hana.cheers_up.application.pub.service;
 
 import com.hana.cheers_up.application.api.dto.DocumentDto;
+import com.hana.cheers_up.application.api.service.KakaoSearchService;
 import com.hana.cheers_up.application.pub.domain.Direction;
 import com.hana.cheers_up.application.pub.repository.DirectionRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class DirectionService {
 
     private final PubService pubService;
     private final DirectionRepository directionRepository;
+    private final KakaoSearchService kakaoSearchService;
 
     public List<Direction> DirectionList(DocumentDto documentDto) {
         if(Objects.isNull(documentDto)) return Collections.emptyList();
@@ -47,6 +49,13 @@ public class DirectionService {
         return directionRepository.saveAll(directionList);
     }
 
+    public List<Direction> buildDirectionListByCategory(DocumentDto inputDto) {
+        if(Objects.isNull(inputDto)) return Collections.emptyList();
 
+        return kakaoSearchService.requestPubCategorySearch(inputDto.latitude(), inputDto.longitude(),RADIUS_KM)
+                .documentDtos().stream()
+                .map(pubDto -> Direction.from(inputDto, pubDto))
+                .toList();
 
+    }
 }
