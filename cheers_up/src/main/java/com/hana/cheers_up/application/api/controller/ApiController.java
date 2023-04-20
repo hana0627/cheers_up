@@ -1,10 +1,12 @@
 package com.hana.cheers_up.application.api.controller;
 
 import com.hana.cheers_up.application.api.service.KakaoSearchService;
+import com.hana.cheers_up.application.pub.service.DirectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -12,11 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class ApiController {
 
     private final KakaoSearchService kakaoSearchService;
-    @PostMapping("/search")
+    private final DirectionService directionService;
+    @RequestMapping("/search")
     public String CheersSearch(String address) {
         log.info("[CheersController CheersSearch] - called");
 
-        kakaoSearchService.requestAddressSearch(address);
+        directionService.recommendPubs(address);
         return "cheers/search";
     }
 }

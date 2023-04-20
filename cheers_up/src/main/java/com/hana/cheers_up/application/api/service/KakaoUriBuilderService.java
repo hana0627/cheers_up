@@ -31,7 +31,7 @@ public class KakaoUriBuilderService {
                 .queryParam("x", longitude)
                 .queryParam("y", latitude)
                 .queryParam("radius", radius)
-                .queryParam("distance",meterRadius)
+                .queryParam("sort",meterRadius)
                 .build().encode().toUri();
 
         log.info("[KakaoUriBuilderService buildUriByAddressSearch] uri{}", uri);

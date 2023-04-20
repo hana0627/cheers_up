@@ -4,6 +4,7 @@ import com.hana.cheers_up.application.api.dto.DocumentDto;
 import com.hana.cheers_up.application.api.dto.KakaoResponseDto;
 import com.hana.cheers_up.application.api.service.KakaoSearchService;
 import com.hana.cheers_up.application.pub.domain.Direction;
+import com.hana.cheers_up.application.pub.dto.response.PubResponse;
 import com.hana.cheers_up.application.pub.repository.DirectionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,17 +52,19 @@ public class DirectionService {
     }
 
     @Transactional
-    public void recommendPubs(String address) {
+    public List<PubResponse> recommendPubs(String address) {
         KakaoResponseDto kakaoResponseDto = kakaoSearchService.requestAddressSearch(address);
 
         if (ObjectUtils.isEmpty(kakaoResponseDto) || CollectionUtils.isEmpty(kakaoResponseDto.documentDtos())) {
             log.error("[PubService recommendPubs fail] Input address: {}", address);
+            return Collections.emptyList();
         }
 
         DocumentDto documentDto = kakaoResponseDto.documentDtos().get(0);
         List<Direction> directions = buildDirectionListByCategory(documentDto);
 
-        directionRepository.saveAll(directions);
+        return directionRepository.saveAll(directions).stream()
+                .map(PubResponse::from).toList();
 
     }
 
