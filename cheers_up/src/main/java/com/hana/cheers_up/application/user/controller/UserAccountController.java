@@ -28,11 +28,5 @@ public class UserAccountController {
         log.info("[UserAccountController login]");
         return "/cheers/search";
     }
-    @RequestMapping(value = "/login", params = "error")
-    public String loginError() {
-        System.out.println("[UserAccountController loginError]");
-        return "redirect:/cheers/search.html";
-    }
-
 
 }

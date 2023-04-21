@@ -18,8 +18,6 @@ import java.util.Optional;
 public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
-    private final PasswordEncoder passwordEncoder;
-
     @Transactional
     public UserAccountDto saveUser(UserAccountDto dto) {
         log.info("[UserAccountService saveUser]");
