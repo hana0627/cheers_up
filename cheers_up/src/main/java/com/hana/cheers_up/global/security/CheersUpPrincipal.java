@@ -20,7 +20,7 @@ public record CheersUpPrincipal(
 ) implements UserDetails, OAuth2User {
 
     public static CheersUpPrincipal of(String username, Collection<? extends GrantedAuthority> authorities, String email, String nickname, String memo, RoleType roleType) {
-        return CheersUpPrincipal.of(username, authorities, email, nickname, memo, roleType, Collections.emptyMap());
+        return of(username, authorities, email, nickname, memo, roleType, Collections.emptyMap());
     }
 
 
