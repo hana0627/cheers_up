@@ -23,9 +23,7 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 @Service
 public class DirectionService {
-    // 최대 20개 까지 노출
-    private static final int MAX_SEARCH_COUNT = 20;
-    // 5키로 내외 
+    // 5키로 내외
     // TODO: 결고값이 넉넉하다면 1km반경으로 줄여보자
     private static final double RADIUS_KM = 5.0;
     private final PubService pubService;
@@ -40,7 +38,6 @@ public class DirectionService {
                         pubDto -> Direction.from(documentDto, pubDto)
                 ).filter(direction -> direction.getDistance() <= RADIUS_KM)
                 .sorted(Comparator.comparing(Direction::getDistance))
-                .limit(MAX_SEARCH_COUNT)
                 .toList();
     }
 
@@ -53,8 +50,9 @@ public class DirectionService {
 
     @Transactional
     public List<PubResponse> recommendPubs(String address) {
+        log.info("[DirectionService recommendPubs]");
         KakaoResponseDto kakaoResponseDto = kakaoSearchService.requestAddressSearch(address);
-
+        System.out.println(kakaoResponseDto);
         if (ObjectUtils.isEmpty(kakaoResponseDto) || CollectionUtils.isEmpty(kakaoResponseDto.documentDtos())) {
             log.error("[PubService recommendPubs fail] Input address: {}", address);
             return Collections.emptyList();
@@ -64,7 +62,8 @@ public class DirectionService {
         List<Direction> directions = buildDirectionListByCategory(documentDto);
 
         return directionRepository.saveAll(directions).stream()
-                .map(PubResponse::from).toList();
+                .map(PubResponse::from)
+                .filter(pubResponse -> pubResponse.categoryName().contains("술집")).toList();
 
     }
 

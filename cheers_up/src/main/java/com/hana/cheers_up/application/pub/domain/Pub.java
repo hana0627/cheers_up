@@ -18,7 +18,7 @@ public class Pub {
     private String pubAddress;
     private double latitude;
     private double longitude;
-
+    private String categoryName;
 
     protected Pub pub(){
         return new Pub();

@@ -9,16 +9,18 @@ public record PubDto(
         String pubName,
         String pubAddress,
         double latitude,
-        double longitude
+        double longitude,
+        String categoryName
 ) {
 
     public static PubDto from(Pub pub) {
-        return PubDto.builder().
-                id(pub.getId()).
-                pubName(pub.getPubName()).
-                pubAddress(pub.getPubAddress()).
-                latitude(pub.getLatitude()).
-                longitude(pub.getLongitude())
+        return PubDto.builder()
+                .id(pub.getId())
+                .pubName(pub.getPubName())
+                .categoryName(pub.getCategoryName())
+                .pubAddress(pub.getPubAddress())
+                .latitude(pub.getLatitude())
+                .longitude(pub.getLongitude())
                 .build();
     }
 

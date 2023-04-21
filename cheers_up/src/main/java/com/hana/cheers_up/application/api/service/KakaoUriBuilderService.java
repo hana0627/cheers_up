@@ -19,7 +19,7 @@ public class KakaoUriBuilderService {
                 .queryParam("query",address)
                 .build().encode().toUri();
 
-        log.info("[KakaoUriBuilderService buildUriByAddressSearch] address: {}, uri{}", address, uri);
+        log.info("[KakaoUriBuilderService buildUriByAddressSearch] address: {}, uri: {}", address, uri);
         return uri;
 
     }
@@ -27,14 +27,14 @@ public class KakaoUriBuilderService {
     public URI buildUriByCategorySearch(double latitude, double longitude, double radius, String category) {
         double meterRadius = radius* 1000;
         URI uri = UriComponentsBuilder.fromHttpUrl(KAKAO_CATEGORY_SEARCH_URL)
-                .queryParam("category_group", category)
+                .queryParam("category_group_code", category)
                 .queryParam("x", longitude)
                 .queryParam("y", latitude)
-                .queryParam("radius", radius)
-                .queryParam("sort",meterRadius)
+                .queryParam("radius", meterRadius)
+                .queryParam("sort","distance")
                 .build().encode().toUri();
 
-        log.info("[KakaoUriBuilderService buildUriByAddressSearch] uri{}", uri);
+        log.info("[KakaoUriBuilderService buildUriByCategorySearch] uri{}", uri);
         return uri;
     }
 }

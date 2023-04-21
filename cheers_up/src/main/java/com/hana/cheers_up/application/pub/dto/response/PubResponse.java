@@ -9,6 +9,7 @@ public record PubResponse(
         String directionUrl,
         String roadViewUrl,
         String roadView,
+        String categoryName,
         String distance
 ) {
 
@@ -18,18 +19,20 @@ public record PubResponse(
                 .pubAddress(direction.getTargetAddress())
                 .directionUrl("todo")
                 .roadViewUrl("todo")
+                .categoryName(direction.getTargetCategoryName())
                 .distance(String.format("%.2f km", direction.getDistance()))
                 .build();
     }
 
 
     @Builder
-    public PubResponse(String pubName, String pubAddress, String directionUrl, String roadViewUrl, String roadView, String distance) {
+    public PubResponse(String pubName, String pubAddress, String directionUrl, String roadViewUrl, String roadView, String categoryName, String distance) {
         this.pubName = pubName;
         this.pubAddress = pubAddress;
         this.directionUrl = directionUrl;
         this.roadViewUrl = roadViewUrl;
         this.roadView = roadView;
+        this.categoryName = categoryName;
         this.distance = distance;
     }
 }

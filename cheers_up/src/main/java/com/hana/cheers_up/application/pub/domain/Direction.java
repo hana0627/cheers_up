@@ -28,20 +28,22 @@ public class Direction {
     private String targetAddress; // 술집 주소
     private Double targetLatitude; //술집의 x좌표
     private Double targetLongitude; //술집의 y좌표
+    private String targetCategoryName; //술집 세부 카테고리 이름
 
     // 두 지점간의 거리
     private Double distance;
 
 
     public static Direction from(DocumentDto documentDto, PubDto pubDto) {
-        return Direction.builder().
-                inputAddress(documentDto.addressName()).
-                inputLatitude(documentDto.latitude()).
-                inputLongitude(documentDto.longitude()).
-                targetPubName(pubDto.pubName()).
-                targetAddress(pubDto.pubAddress()).
-                targetLatitude(pubDto.latitude()).
-                targetLongitude(pubDto.longitude())
+        return Direction.builder()
+                .inputAddress(documentDto.addressName())
+                .inputLatitude(documentDto.latitude())
+                .inputLongitude(documentDto.longitude())
+                .targetPubName(pubDto.pubName())
+                .targetAddress(pubDto.pubAddress())
+                .targetLatitude(pubDto.latitude())
+                .targetLongitude(pubDto.longitude())
+                .targetCategoryName(pubDto.categoryName())
                 .distance(
                         calculateDistance(documentDto.latitude(), documentDto.longitude(),
                                 pubDto.latitude(), pubDto.longitude())
@@ -55,7 +57,7 @@ public class Direction {
 
 
     @Builder
-    public Direction(Long id, String inputAddress, Double inputLatitude, Double inputLongitude, String targetPubName, String targetAddress, Double targetLatitude, Double targetLongitude, Double distance) {
+    public Direction(Long id, String inputAddress, Double inputLatitude, Double inputLongitude, String targetPubName, String targetAddress, Double targetLatitude, Double targetLongitude, String targetCategoryName, Double distance) {
         this.id = id;
         this.inputAddress = inputAddress;
         this.inputLatitude = inputLatitude;
@@ -64,6 +66,7 @@ public class Direction {
         this.targetAddress = targetAddress;
         this.targetLatitude = targetLatitude;
         this.targetLongitude = targetLongitude;
+        this.targetCategoryName = targetCategoryName;
         this.distance = distance;
     }
 
@@ -76,6 +79,7 @@ public class Direction {
                 .targetAddress(pubDto.addressName())
                 .targetLatitude(pubDto.latitude())
                 .targetLongitude(pubDto.longitude())
+                .targetCategoryName(pubDto.categoryName())
                 .distance(pubDto.distance())
                 .build();
     }
