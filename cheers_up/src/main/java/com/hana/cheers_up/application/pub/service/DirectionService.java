@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
@@ -26,6 +27,8 @@ public class DirectionService {
     private final PubService pubService;
     private final DirectionRepository directionRepository;
     private final KakaoSearchService kakaoSearchService;
+    private static final String ROAD_VIEW_BASE_URL = "https://map.kakao.com/link/roadview/";
+    private static final String DIRECTION_BASE_URL = "https://map.kakao.com/link/map/";
 
     public List<Direction> DirectionList(DocumentDto documentDto) {
         if (Objects.isNull(documentDto)) return Collections.emptyList();
@@ -59,7 +62,17 @@ public class DirectionService {
         List<Direction> directions = buildDirectionListByCategory(documentDto);
 
         return directionRepository.saveAll(directions).stream()
-                .map(PubResponse::from)
+                .map(direction -> {
+                    String params = String.join(",", direction.getTargetPubName(),
+                            String.valueOf(direction.getTargetLatitude()), String.valueOf(direction.getTargetLongitude()));
+
+                    String directionUrl = UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + params).toUriString();
+                    log.info("direction params: {}, url: {}", params, directionUrl);
+
+                    String roadViewUrl = ROAD_VIEW_BASE_URL + direction.getTargetLatitude() + "," + direction.getTargetLongitude();
+
+                    return PubResponse.from(direction, directionUrl, roadViewUrl);
+                })
                 .filter(pubResponse -> pubResponse.categoryName().contains(PUB_CATEGORY)).toList();
     }
 
