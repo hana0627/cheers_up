@@ -6,7 +6,9 @@ public record MetaDto(
         @JsonProperty("total_count")
         Integer totalCount,
         @JsonProperty("pageable_count")
-        Integer pageCount
+        Long pageCount,
+        @JsonProperty("is_end")
+        Boolean isEnd
 
 
 ) {

@@ -26,10 +26,6 @@ public class ApiController {
 
         model.addAttribute("pubs", pubResponses);
 
-        log.info("결과값 확인");
-        pubResponses.stream().forEach(
-                System.out::println
-        );
         return "cheers/pub_list";
     }
 }

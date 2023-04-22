@@ -24,7 +24,7 @@ public class KakaoUriBuilderService {
 
     }
 
-    public URI buildUriByCategorySearch(double latitude, double longitude, double radius, String category) {
+    public URI buildUriByCategorySearch(double latitude, double longitude, double radius, String category, int page) {
         double meterRadius = radius* 1000;
         URI uri = UriComponentsBuilder.fromHttpUrl(KAKAO_CATEGORY_SEARCH_URL)
                 .queryParam("category_group_code", category)
@@ -32,11 +32,10 @@ public class KakaoUriBuilderService {
                 .queryParam("y", latitude)
                 .queryParam("radius", meterRadius)
                 .queryParam("sort","distance")
-                //TODO : 사이즈랑 페이징된 정보 다 받아오는 작업 해야함
-                // 15개 불러와서 추리니까 값이 한두개밖에 안뜸
+                .queryParam("page",page)
                 .build().encode().toUri();
 
-        log.info("[KakaoUriBuilderService buildUriByCategorySearch] uri{}", uri);
+        log.info("[KakaoUriBuilderService buildUriByCategorySearch] uri: {}", uri);
         return uri;
     }
 }
