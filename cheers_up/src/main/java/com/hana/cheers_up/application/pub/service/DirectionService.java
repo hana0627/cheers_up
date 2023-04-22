@@ -24,8 +24,8 @@ import java.util.Objects;
 @Service
 public class DirectionService {
     // 5키로 내외
-    // TODO: 결고값이 넉넉하다면 1km반경으로 줄여보자
     private static final double RADIUS_KM = 5.0;
+    private static final String PUB_CATEGORY="술집";
     private final PubService pubService;
     private final DirectionRepository directionRepository;
     private final KakaoSearchService kakaoSearchService;
@@ -63,7 +63,7 @@ public class DirectionService {
 
         return directionRepository.saveAll(directions).stream()
                 .map(PubResponse::from)
-                .filter(pubResponse -> pubResponse.categoryName().contains("술집")).toList();
+                .filter(pubResponse -> pubResponse.categoryName().contains(PUB_CATEGORY)).toList();
 
     }
 

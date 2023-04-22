@@ -6,6 +6,7 @@ import com.hana.cheers_up.application.pub.service.DirectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -18,10 +19,13 @@ public class ApiController {
     private final KakaoSearchService kakaoSearchService;
     private final DirectionService directionService;
     @PostMapping("/search")
-    public String CheersSearch(String address) {
+    public String CheersSearch(String address, Model model) {
         log.info("[CheersController CheersSearch] - called");
 
         List<PubResponse> pubResponses = directionService.recommendPubs(address);
+
+        model.addAttribute("pubs", pubResponses);
+
         log.info("결과값 확인");
         pubResponses.stream().forEach(
                 System.out::println
