@@ -131,7 +131,7 @@
 <h1><span class="highlight1">오늘</span> <span class="highlight2">한잔</span> <span class="highlight3">어때요</span><span
         class="highlight4">?</span></h1>
 <form action="/search" method="post">
-    <input type="text" id="address_kakao" name="address" placeholder="어디서 한잔 할까요?">
+    <input type="text" id="address_kakao" name="address" placeholder="어디서 한잔 할까요?" readonly="true">
     <div>
         <button type="submit" id="search_btn">Search</button>
     </div>
@@ -143,8 +143,8 @@
         <div class="address"><span th:text="${pubs.pubAddress}">서울 양천구 신목로</span></div>
         <div class="distance"><span th:text="${pubs.distance}">30m</span></div>
         <div class="links">
-            <a href="#"><span th:text="${pubs.roadView}">길안내</span></a>
-            <a href="#"><span th:text="${pubs.roadViewUrl}">로드뷰</span></a>
+            <a th:href="@{${pubs.directionUrl}}"><span>길안내</span></a>
+            <a th:href="@{${pubs.roadViewUrl}}"><span>로드뷰</span></a>
         </div>
     </div>
 </div>

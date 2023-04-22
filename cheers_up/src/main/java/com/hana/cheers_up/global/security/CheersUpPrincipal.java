@@ -61,7 +61,6 @@ public record CheersUpPrincipal(
         );
     }
 
-    //TODO 패스워드 지우면서 여기 구현부 바뀜
     @Override
     public String getPassword() {
         return null;

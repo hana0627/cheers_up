@@ -3,7 +3,9 @@ package com.hana.cheers_up.application.pub.dto.response;
 import com.hana.cheers_up.application.pub.domain.Direction;
 import lombok.Builder;
 
+
 public record PubResponse(
+
         String pubName,
         String pubAddress,
         String directionUrl,
@@ -13,12 +15,12 @@ public record PubResponse(
         String distance
 ) {
 
-    public static PubResponse from(Direction direction) {
+    public static PubResponse from(Direction direction, String directionUrl, String roadViewUrl) {
         return PubResponse.builder()
                 .pubName(direction.getTargetPubName())
                 .pubAddress(direction.getTargetAddress())
-                .directionUrl("todo")
-                .roadViewUrl("todo")
+                .directionUrl(directionUrl)
+                .roadViewUrl(roadViewUrl)
                 .categoryName(direction.getTargetCategoryName())
                 .distance(String.format("%.1f m", direction.getDistance()))
                 .build();
