@@ -20,8 +20,7 @@ public class KakaoSearchService {
     private final RestTemplate restTemplate;
     private final KakaoUriBuilderService kakaoUriBuilderService;
 
-    private static final String PUB_CATEGORY = "FD6"; //TODO : 음식점 카테고리. 이후 로직에서 술집만 필터링 하는 로직 추가해야함
-    // TODO : 따라서 api를 요청해보고 결과값에 따라서 dto가 달라질 가능성 있음 
+    private static final String PUB_CATEGORY = "FD6";
 
     @Value("${kakao.rest.api.key}")
     private String kakaoRestApiKey;
@@ -44,7 +43,7 @@ public class KakaoSearchService {
         URI uri = kakaoUriBuilderService.buildUriByCategorySearch(latitude, longitude, radius, PUB_CATEGORY);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, "kakaoAK " + kakaoRestApiKey);
+        headers.set(HttpHeaders.AUTHORIZATION, "KakaoAK " + kakaoRestApiKey);
         HttpEntity httpEntity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(uri, HttpMethod.GET, httpEntity, KakaoResponseDto.class).getBody();

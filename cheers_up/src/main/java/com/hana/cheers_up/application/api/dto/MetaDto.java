@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record MetaDto(
         @JsonProperty("total_count")
-        Integer totalCount
+        Integer totalCount,
+        @JsonProperty("pageable_count")
+        Integer pageCount
+
+
 ) {
 }
