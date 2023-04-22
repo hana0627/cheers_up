@@ -32,6 +32,8 @@ public class KakaoUriBuilderService {
                 .queryParam("y", latitude)
                 .queryParam("radius", meterRadius)
                 .queryParam("sort","distance")
+                //TODO : 사이즈랑 페이징된 정보 다 받아오는 작업 해야함
+                // 15개 불러와서 추리니까 값이 한두개밖에 안뜸
                 .build().encode().toUri();
 
         log.info("[KakaoUriBuilderService buildUriByCategorySearch] uri{}", uri);

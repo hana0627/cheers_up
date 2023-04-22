@@ -20,7 +20,7 @@ public record PubResponse(
                 .directionUrl("todo")
                 .roadViewUrl("todo")
                 .categoryName(direction.getTargetCategoryName())
-                .distance(String.format("%.2f km", direction.getDistance()))
+                .distance(String.format("%.1f m", direction.getDistance()))
                 .build();
     }
 
