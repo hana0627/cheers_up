@@ -39,8 +39,8 @@ public class KakaoSearchService {
         return restTemplate.exchange(uri, HttpMethod.GET, httpEntity, KakaoResponseDto.class).getBody();
     }
 
-    public KakaoResponseDto requestPubCategorySearch(double latitude, double longitude, double radius) {
-        URI uri = kakaoUriBuilderService.buildUriByCategorySearch(latitude, longitude, radius, PUB_CATEGORY);
+    public KakaoResponseDto requestPubCategorySearch(double latitude, double longitude, double radius, int page) {
+        URI uri = kakaoUriBuilderService.buildUriByCategorySearch(latitude, longitude, radius, PUB_CATEGORY, page);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.AUTHORIZATION, "KakaoAK " + kakaoRestApiKey);
