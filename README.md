@@ -29,7 +29,7 @@ Spring Boot
 
 ---
 
-##개발기간
+## 개발기간
 
 2023.04.16 ~ 2023.04.23
 
@@ -43,5 +43,5 @@ Spring Boot
 ---
 
 ## 프로젝트 회고
-* (작성중)
+* (https://velog.io/@hana0627/cheers-up-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%9A%8C%EA%B3%A0)
 
