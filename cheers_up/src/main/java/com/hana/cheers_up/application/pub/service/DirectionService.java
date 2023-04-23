@@ -41,18 +41,17 @@ public class DirectionService {
                 .toList();
     }
 
-    @Transactional
-    public List<Direction> saveAll(List<Direction> directionList) {
-        if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
-
-        return directionRepository.saveAll(directionList);
-    }
+//    @Transactional
+//    public List<Direction> saveAll(List<Direction> directionList) {
+//        if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
+//
+//        return directionRepository.saveAll(directionList);
+//    }
 
     @Transactional
     public List<PubResponse> recommendPubs(String address) {
         log.info("[DirectionService recommendPubs]");
         KakaoResponseDto kakaoResponseDto = kakaoSearchService.requestAddressSearch(address);
-        System.out.println(kakaoResponseDto);
         if (ObjectUtils.isEmpty(kakaoResponseDto) || CollectionUtils.isEmpty(kakaoResponseDto.documentDtos())) {
             log.error("[PubService recommendPubs fail] Input address: {}", address);
             return Collections.emptyList();
@@ -61,7 +60,8 @@ public class DirectionService {
         DocumentDto documentDto = kakaoResponseDto.documentDtos().get(0);
         List<Direction> directions = buildDirectionListByCategory(documentDto);
 
-        return directionRepository.saveAll(directions).stream()
+//        return directionRepository.saveAll(directions).stream()
+        return directions.stream()
                 .map(direction -> {
                     String params = String.join(",", direction.getTargetPubName(),
                             String.valueOf(direction.getTargetLatitude()), String.valueOf(direction.getTargetLongitude()));

@@ -1,15 +1,25 @@
 package com.hana.cheers_up.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hana.cheers_up.application.user.domain.constant.RoleType;
 import com.hana.cheers_up.application.user.dto.UserAccountDto;
 import com.hana.cheers_up.application.user.service.UserAccountService;
 import com.hana.cheers_up.global.security.CheersUpPrincipal;
 import com.hana.cheers_up.global.security.KakaoOAuth2Response;
+import com.hana.cheers_up.global.security.jwt.config.JwtAuthFilter;
+import com.hana.cheers_up.global.security.OAuth2SuccessHandler;
+import com.hana.cheers_up.global.security.jwt.service.TokenService;
+import com.nimbusds.oauth2.sdk.ErrorObject;
+import com.nimbusds.oauth2.sdk.ErrorResponse;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,37 +27,48 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.PrintWriter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Slf4j
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
+    //    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2SuccessHandler successHandler;
+    private final TokenService tokenService;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(
+//            HttpSecurity http) throws Exception {
             HttpSecurity http,
             OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .mvcMatchers(HttpMethod.GET,
-                                "/", "/index", "/users/login").permitAll()
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                                .mvcMatchers(HttpMethod.GET,
+                                        "/", "/index", "/users/login").permitAll()
 //                        .antMatchers("/cheers/search**").authenticated()
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 ).formLogin(withDefaults())
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .oauth2Login(oAuth -> oAuth
-                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService)
-                        )
-                ).csrf().disable() //TODO : 이번 프로젝트에서 해당 이슈 반드시 해결
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
+                        //.successHandler(successHandler)
+                )//.csrf().disable()
+                .csrf(csrf -> csrf.ignoringAntMatchers("/search"))
+                .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public UserDetailsService userDetailsService(UserAccountService userAccountService) {
-        log.info("[SecurityConfig userDetailsService]");
         return username -> userAccountService
                 .searchUser(username)
                 .map(CheersUpPrincipal::from)
@@ -59,7 +80,6 @@ public class SecurityConfig {
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(
             UserAccountService userAccountService
     ) {
-        log.info("[SecurityConfig oAuth2UserService]");
         final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
 
         return userRequest -> {

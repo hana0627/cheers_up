@@ -2,9 +2,13 @@ package com.hana.cheers_up.application.user.dto;
 
 import com.hana.cheers_up.application.user.domain.UserAccount;
 import com.hana.cheers_up.application.user.domain.constant.RoleType;
+import lombok.Builder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Builder
 public record UserAccountDto(
         String userId,
         String email,
@@ -51,4 +55,20 @@ public record UserAccountDto(
                 createdBy
         );
     }
+//    @Component
+//    public class UserRequestMapper {
+//        public UserAccountDto toDto(OAuth2User oAuth2User) {
+//            var attributes = oAuth2User.getAttributes();
+//            return UserDto.builder()
+//                    .email((String)attributes.get("email"))
+//                    .name((String)attributes.get("name"))
+//                    .picture((String)attributes.get("picture"))
+//                    .build();
+//        }
+//
+//        public UserFindRequest toFindDto(UserDto userDto) {
+//            return new UserFindRequest(userDto.getEmail());
+//        }
+//    }
+
 }
