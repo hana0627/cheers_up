@@ -30,24 +30,6 @@ public class DirectionService {
     private static final String ROAD_VIEW_BASE_URL = "https://map.kakao.com/link/roadview/";
     private static final String DIRECTION_BASE_URL = "https://map.kakao.com/link/map/";
 
-    public List<Direction> DirectionList(DocumentDto documentDto) {
-        if (Objects.isNull(documentDto)) return Collections.emptyList();
-
-        return pubService.Pubs().stream()
-                .map(
-                        pubDto -> Direction.from(documentDto, pubDto)
-                ).filter(direction -> direction.getDistance() <= RADIUS_KM)
-                .sorted(Comparator.comparing(Direction::getDistance))
-                .toList();
-    }
-
-//    @Transactional
-//    public List<Direction> saveAll(List<Direction> directionList) {
-//        if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
-//
-//        return directionRepository.saveAll(directionList);
-//    }
-
     @Transactional
     public List<PubResponse> recommendPubs(String address) {
         log.info("[DirectionService recommendPubs]");
@@ -60,21 +42,15 @@ public class DirectionService {
         DocumentDto documentDto = kakaoResponseDto.documentDtos().get(0);
         List<Direction> directions = buildDirectionListByCategory(documentDto);
 
-//        return directionRepository.saveAll(directions).stream()
         return directions.stream()
                 .map(direction -> {
-                    String params = String.join(",", direction.getTargetPubName(),
-                            String.valueOf(direction.getTargetLatitude()), String.valueOf(direction.getTargetLongitude()));
-
-                    String directionUrl = UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + params).toUriString();
-                    log.info("direction params: {}, url: {}", params, directionUrl);
-
+                    String directionUrl = createDirectionUrl(direction);
                     String roadViewUrl = ROAD_VIEW_BASE_URL + direction.getTargetLatitude() + "," + direction.getTargetLongitude();
-
                     return PubResponse.from(direction, directionUrl, roadViewUrl);
                 })
                 .filter(pubResponse -> pubResponse.categoryName().contains(PUB_CATEGORY)).toList();
     }
+
 
     private List<Direction> buildDirectionListByCategory(DocumentDto inputDto) {
 
@@ -84,27 +60,36 @@ public class DirectionService {
 
         KakaoResponseDto responseDto = searchCategory(inputDto, page);
 
+        addDirections(inputDto, directions, responseDto);
+
+        while (true) {
+            page++;
+            responseDto = searchCategory(inputDto, page); // api -call
+            addDirections(inputDto, directions, responseDto); // 결과저장
+            //결과값이 끝이거나, 예상외로 결과값이 너무 많을경우 20번만 반복하는것으로 제한 
+            if (responseDto.metaDto().isEnd() || page > 20) break;
+        }
+        return directions;
+    }
+
+    private static void addDirections(DocumentDto inputDto, List<Direction> directions, KakaoResponseDto responseDto) {
         directions.addAll(responseDto
                 .documentDtos().stream()
                 .map(pubDto -> Direction.from(inputDto, pubDto))
                 .toList());
-
-        while (true) {
-            page++;
-            responseDto = searchCategory(inputDto, page);
-            directions.addAll(responseDto.documentDtos().stream()
-                    .map(pubDto -> Direction.from(inputDto, pubDto))
-                    .toList());
-            //결과값이 끝이거나, 예상외로 결과값이 너무 많을경우 20번만 반복하는것으로 제한 
-            if (responseDto.metaDto().isEnd() || page > 20) {
-                break;
-            }
-        }
-        return directions;
     }
 
     private KakaoResponseDto searchCategory(DocumentDto inputDto, int page) {
         return kakaoSearchService.requestPubCategorySearch(inputDto.latitude(), inputDto.longitude(), RADIUS_KM, page);
     }
+
+    private static String createDirectionUrl(Direction direction) {
+        String params = String.join(",", direction.getTargetPubName(),
+                String.valueOf(direction.getTargetLatitude()), String.valueOf(direction.getTargetLongitude()));
+
+        String directionUrl = UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + params).toUriString();
+        return directionUrl;
+    }
+
 
 }

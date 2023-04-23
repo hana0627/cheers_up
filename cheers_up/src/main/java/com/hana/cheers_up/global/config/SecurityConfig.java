@@ -46,7 +46,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-//            HttpSecurity http) throws Exception {
             HttpSecurity http,
             OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService) throws Exception {
         return http
@@ -54,14 +53,13 @@ public class SecurityConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .mvcMatchers(HttpMethod.GET,
                                         "/", "/index", "/users/login").permitAll()
-//                        .antMatchers("/cheers/search**").authenticated()
                                 .anyRequest().authenticated()
                 ).formLogin(withDefaults())
                 .logout(logout -> logout.logoutSuccessUrl("/"))
                 .oauth2Login(oAuth -> oAuth
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
                         //.successHandler(successHandler)
-                )//.csrf().disable()
+                )
                 .csrf(csrf -> csrf.ignoringAntMatchers("/search"))
                 .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
                 .build();
